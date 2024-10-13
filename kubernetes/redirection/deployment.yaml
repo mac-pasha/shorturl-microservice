@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redirection-deployment
+  namespace: short-url
+  labels:
+    app: redirection
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: redirection
+  template:
+    metadata:
+      labels:
+        app: redirection
+    spec:
+      containers:
+        - name: redirection
+          image: ipasha/ms-surl-redirection:0.0.2
+          ports:
+            - containerPort: 3000
+          env:
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: REDIS_HOST
+              value: "redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: APP_URL
+              value: "http://localhost:8082/"
+            - name: APP_PORT
+              value: "3000"
+      imagePullSecrets:
+        - name: regcred

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: management-deployment
+  namespace: short-url
+  labels:
+    app: management
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: management
+  template:
+    metadata:
+      labels:
+        app: management
+    spec:
+      containers:
+        - name: management
+          image: ipasha/ms-surl-management:0.0.2
+          ports:
+            - containerPort: 3000
+          env:
+            - name: DATABASE_NAME
+              value: "short-url"
+            - name: DATABASE_USER
+              value: "root"
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secret
+                  key: db-password
+            - name: DATABASE_HOST
+              value: "10.10.10.149"
+            - name: DATABASE_PORT
+              value: "3500"
+            - name: RABBITMQ_HOST
+              value: "rabbitmq"
+            - name: RABBITMQ_PORT
+              value: "5672"
+            - name: REDIRECTION_APP_URL
+              value: "http://localhost:8082"
+            - name: APP_PORT
+              value: "3000"

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: management-service
+  namespace: short-url
+spec:
+  selector:
+    app: management
+  ports:
+    - protocol: TCP
+      port: 8081 # External port
+      targetPort: 3000 # Container port
+  type: NodePort # Can be ClusterIP or LoadBalancer based on your setup

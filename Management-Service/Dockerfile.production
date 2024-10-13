@@ -1,0 +1,17 @@
+FROM node:18-alpine AS builder
+WORKDIR /nodeapp
+COPY /src/package*.json ./src/
+RUN cd src && npm install --only=production
+COPY /src /nodeapp/src
+
+# Build the application if necessary (optional step)
+# If your app requires building assets (e.g., React/Vue/Angular, TypeScript),
+# you can add a build step here. For example:
+# RUN npm run build
+
+FROM node:lts-alpine
+WORKDIR /nodeapp
+COPY --from=builder /nodeapp/src/node_modules /nodeapp/src/node_modules
+COPY --from=builder /nodeapp/src /nodeapp/src
+EXPOSE 3000
+CMD ["npm", "start"]
